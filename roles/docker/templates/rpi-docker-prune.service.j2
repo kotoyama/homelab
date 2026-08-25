@@ -1,0 +1,8 @@
+[Unit]
+Description=Docker image prune
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker image prune -af --filter "until=168h"

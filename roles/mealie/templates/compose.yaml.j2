@@ -1,0 +1,18 @@
+services:
+  mealie:
+    image: {{ mealie_image }}
+    container_name: mealie
+    ports:
+      - "{{ mealie_port }}:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    volumes:
+      - ./data:/app/data/
+    environment:
+      - ALLOW_SIGNUP=false
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone }}
+    restart: unless-stopped

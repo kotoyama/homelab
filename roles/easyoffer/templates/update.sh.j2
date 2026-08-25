@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+
+git -C {{ easyoffer_site_dir }} fetch origin {{ easyoffer_site_branch }}
+git -C {{ easyoffer_site_dir }} reset --hard FETCH_HEAD

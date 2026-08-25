@@ -1,0 +1,10 @@
+---
+timezone: Europe/Sofia
+
+data_dir: /mnt/data
+apps_dir: "{{ data_dir }}/apps"
+backups_dir: "{{ data_dir }}/backups"
+
+ansible_become: true
+ansible_become_method: sudo
+ansible_become_pass: "{{ vault_become_password }}"

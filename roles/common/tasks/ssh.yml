@@ -1,0 +1,33 @@
+---
+- name: Create .ssh directory
+  ansible.builtin.file:
+    path: "{{ common_ssh_home }}/.ssh"
+    state: directory
+    owner: "{{ common_ssh_owner }}"
+    group: "{{ common_ssh_owner }}"
+    mode: "0700"
+
+- name: Install authorized_keys
+  ansible.builtin.copy:
+    src: authorized_keys
+    dest: "{{ common_ssh_home }}/.ssh/authorized_keys"
+    owner: "{{ common_ssh_owner }}"
+    group: "{{ common_ssh_owner }}"
+    mode: "0600"
+
+- name: Route github.com through deploy key
+  ansible.builtin.copy:
+    src: ssh-config
+    dest: "{{ common_ssh_home }}/.ssh/config"
+    owner: "{{ common_ssh_owner }}"
+    group: "{{ common_ssh_owner }}"
+    mode: "0644"
+
+- name: Restore easyoffer deploy private key
+  ansible.builtin.copy:
+    content: "{{ vault_easyoffer_deploy_key_private }}"
+    dest: "{{ common_deploy_key_path }}"
+    owner: "{{ common_ssh_owner }}"
+    group: "{{ common_ssh_owner }}"
+    mode: "0600"
+  no_log: true

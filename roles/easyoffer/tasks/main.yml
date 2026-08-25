@@ -1,0 +1,77 @@
+---
+- name: Create service directory
+  ansible.builtin.file:
+    path: "{{ easyoffer_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Deploy nginx config
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ easyoffer_dir }}/{{ item }}"
+    mode: "0644"
+  loop:
+    - nginx.conf
+    - security-headers.conf
+  notify: Deploy easyoffer
+
+- name: Deploy site update script
+  ansible.builtin.template:
+    src: update.sh.j2
+    dest: "{{ easyoffer_dir }}/update.sh"
+    mode: "0755"
+
+- name: Check site checkout exists
+  ansible.builtin.stat:
+    path: "{{ easyoffer_site_dir }}/.git"
+  register: easyoffer_site_checkout
+
+- name: Clone static site from GitHub
+  ansible.builtin.git:
+    repo: "{{ easyoffer_site_repo }}"
+    dest: "{{ easyoffer_site_dir }}"
+    version: "{{ easyoffer_site_branch }}"
+    update: false
+    accept_hostkey: true
+  become: true
+  become_user: "{{ ansible_user }}"
+  when: not easyoffer_site_checkout.stat.exists
+
+- name: Deploy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ easyoffer_dir }}/compose.yaml"
+    mode: "0644"
+  notify: Deploy easyoffer
+
+- name: Install site update service unit
+  ansible.builtin.template:
+    src: rpi-update-easyoffer.service.j2
+    dest: /etc/systemd/system/rpi-update-easyoffer.service
+    mode: "0644"
+
+- name: Install site update timer unit
+  ansible.builtin.copy:
+    src: rpi-update-easyoffer.timer
+    dest: /etc/systemd/system/rpi-update-easyoffer.timer
+    mode: "0644"
+
+- name: Enable hourly site update timer
+  ansible.builtin.systemd:
+    name: rpi-update-easyoffer.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Apply easyoffer deployment now (if changed)
+  ansible.builtin.meta: flush_handlers
+
+- name: Check easyoffer site responds
+  ansible.builtin.uri:
+    url: "http://localhost:{{ easyoffer_port }}/en/"
+    status_code: 200
+  register: easyoffer_health
+  retries: 6
+  delay: 10
+  until: easyoffer_health.status == 200
+  when: not ansible_check_mode

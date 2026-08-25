@@ -1,0 +1,5 @@
+---
+- name: Deploy mealie
+  community.docker.docker_compose_v2:
+    project_src: "{{ mealie_dir }}"
+    state: present

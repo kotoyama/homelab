@@ -1,0 +1,26 @@
+---
+- name: Create service directory
+  ansible.builtin.file:
+    path: "{{ mealie_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Deploy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ mealie_dir }}/compose.yaml"
+    mode: "0644"
+  notify: Deploy mealie
+
+- name: Apply mealie deployment now (if changed)
+  ansible.builtin.meta: flush_handlers
+
+- name: Check Mealie web responds
+  ansible.builtin.uri:
+    url: "http://localhost:{{ mealie_port }}/"
+    status_code: 200
+  register: mealie_health
+  retries: 12
+  delay: 10
+  until: mealie_health.status == 200
+  when: not ansible_check_mode

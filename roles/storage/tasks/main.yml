@@ -1,0 +1,33 @@
+---
+- name: Check SSD with label data is attached
+  ansible.builtin.stat:
+    path: /dev/disk/by-label/data
+  register: storage_ssd
+
+- name: Assert SSD is present
+  ansible.builtin.assert:
+    that: storage_ssd.stat.exists
+    fail_msg: >-
+      SSD with label 'data' not found. Attach the SSD and format it:
+      mkfs.ext4 -L data /dev/sda1
+
+- name: Mount SSD partition (fstab entry + mount now)
+  ansible.posix.mount:
+    path: "{{ data_dir }}"
+    src: /dev/disk/by-label/data
+    fstype: ext4
+    opts: defaults,nofail
+    passno: "2"
+    state: mounted
+
+- name: Create apps directory
+  ansible.builtin.file:
+    path: "{{ apps_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create pihole backups directory
+  ansible.builtin.file:
+    path: "{{ backups_dir }}/pihole"
+    state: directory
+    mode: "0755"

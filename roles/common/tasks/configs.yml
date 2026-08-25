@@ -1,0 +1,25 @@
+---
+- name: Enable memory cgroup on boot
+  ansible.builtin.replace:
+    path: /boot/firmware/cmdline.txt
+    regexp: '^((?!.*\bcgroup_enable=memory\b).+)$'
+    replace: '\1 cgroup_enable=memory'
+
+- name: Limit journald size on SD card
+  ansible.builtin.copy:
+    src: journald-rpi.conf
+    dest: /etc/systemd/journald.conf.d/rpi.conf
+    mode: "0644"
+  notify: Restart journald
+
+- name: Enable periodic apt update and upgrade
+  ansible.builtin.copy:
+    src: apt-20auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    mode: "0644"
+
+- name: Restrict unattended-upgrades to security origin
+  ansible.builtin.copy:
+    src: apt-50unattended-upgrades
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    mode: "0644"

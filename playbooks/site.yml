@@ -1,0 +1,6 @@
+---
+- name: Homelab — system
+  ansible.builtin.import_playbook: system.yml
+
+- name: Homelab — services
+  ansible.builtin.import_playbook: services.yml

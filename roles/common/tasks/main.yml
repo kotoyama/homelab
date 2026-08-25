@@ -1,0 +1,9 @@
+---
+- name: Install base packages
+  ansible.builtin.import_tasks: packages.yml
+
+- name: Configure system services
+  ansible.builtin.import_tasks: configs.yml
+
+- name: Set up SSH keys
+  ansible.builtin.import_tasks: ssh.yml

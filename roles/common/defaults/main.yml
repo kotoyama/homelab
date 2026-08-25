@@ -1,0 +1,8 @@
+---
+common_packages:
+  - unattended-upgrades
+
+common_ssh_owner: "{{ ansible_user }}"
+common_ssh_home: "/home/{{ ansible_user }}"
+
+common_deploy_key_path: "{{ common_ssh_home }}/.ssh/pi_fetcher"

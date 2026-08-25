@@ -1,0 +1,11 @@
+services:
+  nginx:
+    image: {{ easyoffer_image }}
+    container_name: easyoffer-nginx
+    ports:
+      - "{{ easyoffer_port }}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./security-headers.conf:/etc/nginx/security-headers.conf:ro
+      - ./_site:/usr/share/nginx/html:ro
+    restart: unless-stopped

@@ -1,0 +1,71 @@
+---
+- name: Install deb822 repository tooling
+  ansible.builtin.apt:
+    name: python3-debian
+    state: present
+
+- name: Remove legacy one-line docker repo file
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/docker.list
+    state: absent
+
+- name: Add Docker apt repository (deb822)
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: https://download.docker.com/linux/debian
+    suites: "{{ ansible_facts.distribution_release }}"
+    components: stable
+    signed_by: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Install Docker packages
+  ansible.builtin.apt:
+    name: "{{ docker_packages }}"
+    state: present
+    update_cache: true
+
+- name: Install daemon.json
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    mode: "0644"
+  notify: Restart docker
+
+- name: Create systemd drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: "0755"
+
+- name: Require SSD mount before docker starts
+  ansible.builtin.template:
+    src: override.conf.j2
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    mode: "0644"
+  notify: Restart docker
+
+- name: Enable and start docker
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Install docker prune service unit
+  ansible.builtin.template:
+    src: rpi-docker-prune.service.j2
+    dest: /etc/systemd/system/rpi-docker-prune.service
+    mode: "0644"
+
+- name: Install docker prune timer unit
+  ansible.builtin.copy:
+    src: rpi-docker-prune.timer
+    dest: /etc/systemd/system/rpi-docker-prune.timer
+    mode: "0644"
+
+- name: Enable weekly docker prune timer
+  ansible.builtin.systemd:
+    name: rpi-docker-prune.timer
+    enabled: true
+    state: started
+    daemon_reload: true

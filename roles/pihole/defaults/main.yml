@@ -1,0 +1,5 @@
+---
+pihole_dir: "{{ apps_dir }}/pihole"
+pihole_image: pihole/pihole:2026.07.2
+pihole_dns_port: "53"
+pihole_http_port: "80"

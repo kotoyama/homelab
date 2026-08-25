@@ -1,0 +1,5 @@
+---
+- name: Deploy easyoffer
+  community.docker.docker_compose_v2:
+    project_src: "{{ easyoffer_dir }}"
+    state: present

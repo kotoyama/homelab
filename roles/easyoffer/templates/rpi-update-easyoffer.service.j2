@@ -1,0 +1,8 @@
+[Unit]
+Description=Update easyoffer static site from GitHub
+RequiresMountsFor={{ data_dir }}
+
+[Service]
+Type=oneshot
+User={{ ansible_user }}
+ExecStart={{ easyoffer_dir }}/update.sh

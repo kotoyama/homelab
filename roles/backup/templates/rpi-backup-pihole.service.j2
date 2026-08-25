@@ -1,0 +1,7 @@
+[Unit]
+Description=Pi-hole Teleporter backup
+RequiresMountsFor={{ data_dir }}
+
+[Service]
+Type=oneshot
+ExecStart={{ backup_script_dir }}/backup-pihole.sh

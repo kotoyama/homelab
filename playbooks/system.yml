@@ -1,0 +1,9 @@
+---
+- name: Base system setup
+  hosts: rpi
+  gather_facts: true
+
+  roles:
+    - { role: common, tags: common }
+    - { role: storage, tags: storage }
+    - { role: docker, tags: docker }

@@ -1,0 +1,8 @@
+---
+easyoffer_dir: "{{ apps_dir }}/easyoffer"
+easyoffer_image: nginx:stable-alpine
+easyoffer_port: "8080"
+
+easyoffer_site_dir: "{{ easyoffer_dir }}/_site"
+easyoffer_site_repo: git@github.com:kotoyama/easyoffer.git
+easyoffer_site_branch: site-dist
