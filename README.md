@@ -40,7 +40,7 @@ LAN-only: nothing is exposed to the internet.
 **Scheduled jobs**:
 
 - **hourly** — easyoffer site refresh
-- **daily** — backups: Pi-hole Teleporter, Mealie data snapshot (7-day retention)
+- **daily** — backups: Pi-hole Teleporter, Mealie data snapshot (7-day retention), encrypted sync to Google Drive
 - **weekly** — Docker image prune
 
 ## Fresh start

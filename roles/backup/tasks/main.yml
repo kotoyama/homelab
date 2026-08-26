@@ -15,8 +15,42 @@
     owner: root
     group: root
 
+- name: Install rclone
+  ansible.builtin.apt:
+    name: rclone
+    state: present
+
+- name: Create rclone config directory
+  ansible.builtin.file:
+    path: /root/.config/rclone
+    state: directory
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Deploy rclone config
+  ansible.builtin.template:
+    src: rclone.conf.j2
+    dest: /root/.config/rclone/rclone.conf
+    mode: "0600"
+    owner: root
+    group: root
+  no_log: true
+
+- name: Deploy gdrive token env file
+  ansible.builtin.template:
+    src: gdrive.env.j2
+    dest: /root/.config/rclone/gdrive.env
+    mode: "0600"
+    owner: root
+    group: root
+  no_log: true
+
 - name: Set up pihole backup
   ansible.builtin.import_tasks: pihole.yml
 
 - name: Set up mealie backup
   ansible.builtin.import_tasks: mealie.yml
+
+- name: Set up cloud backup sync
+  ansible.builtin.import_tasks: cloud-sync.yml

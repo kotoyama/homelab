@@ -1,0 +1,31 @@
+---
+- name: Install cloud sync script
+  ansible.builtin.template:
+    src: sync-backups.sh.j2
+    dest: "{{ backup_script_dir }}/sync-backups.sh"
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Install cloud sync service unit
+  ansible.builtin.template:
+    src: rpi-backup-cloud-sync.service.j2
+    dest: /etc/systemd/system/rpi-backup-cloud-sync.service
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Install cloud sync timer unit
+  ansible.builtin.copy:
+    src: rpi-backup-cloud-sync.timer
+    dest: /etc/systemd/system/rpi-backup-cloud-sync.timer
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Enable nightly cloud sync timer
+  ansible.builtin.systemd:
+    name: rpi-backup-cloud-sync.timer
+    enabled: true
+    state: started
+    daemon_reload: true

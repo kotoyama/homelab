@@ -1,0 +1,11 @@
+[gdrive]
+type = drive
+scope = drive.file
+
+[gcrypt]
+type = crypt
+remote = gdrive:rpi4-backups
+password = {{ vault_rclone_crypt_password }}
+password2 = {{ vault_rclone_crypt_password2 }}
+filename_encryption = standard
+directory_name_encryption = true
