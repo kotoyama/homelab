@@ -1,4 +1,13 @@
 ---
+- name: Forbid root SSH login
+  ansible.builtin.copy:
+    src: sshd-rpi.conf
+    dest: /etc/ssh/sshd_config.d/rpi.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload ssh
+
 - name: Create .ssh directory
   ansible.builtin.file:
     path: "{{ common_ssh_home }}/.ssh"
