@@ -22,7 +22,9 @@ SSD mounted at `/mnt/data`:
 /mnt/data/
 ├── docker/          # docker root
 ├── apps/            # docker compose services
-└── backups/pihole/  # teleporter exports
+└── backups/
+    ├── pihole/      # teleporter exports
+    └── mealie/      # full data snapshots
 ```
 
 ### Services
@@ -38,7 +40,7 @@ LAN-only: nothing is exposed to the internet.
 **Scheduled jobs**:
 
 - **hourly** — easyoffer site refresh
-- **daily** — Pi-hole Teleporter backup (7-day retention)
+- **daily** — backups: Pi-hole Teleporter, Mealie data snapshot (7-day retention)
 - **weekly** — Docker image prune
 
 ## Fresh start

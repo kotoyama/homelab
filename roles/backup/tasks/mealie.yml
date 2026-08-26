@@ -1,0 +1,31 @@
+---
+- name: Install mealie backup script
+  ansible.builtin.template:
+    src: backup-mealie.sh.j2
+    dest: "{{ backup_script_dir }}/backup-mealie.sh"
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Install mealie backup service unit
+  ansible.builtin.template:
+    src: rpi-backup-mealie.service.j2
+    dest: /etc/systemd/system/rpi-backup-mealie.service
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Install mealie backup timer unit
+  ansible.builtin.copy:
+    src: rpi-backup-mealie.timer
+    dest: /etc/systemd/system/rpi-backup-mealie.timer
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Enable nightly mealie backup timer
+  ansible.builtin.systemd:
+    name: rpi-backup-mealie.timer
+    enabled: true
+    state: started
+    daemon_reload: true

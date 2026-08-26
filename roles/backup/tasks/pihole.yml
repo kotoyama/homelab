@@ -1,0 +1,31 @@
+---
+- name: Install pihole backup script
+  ansible.builtin.template:
+    src: backup-pihole.sh.j2
+    dest: "{{ backup_script_dir }}/backup-pihole.sh"
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Install pihole backup service unit
+  ansible.builtin.template:
+    src: rpi-backup-pihole.service.j2
+    dest: /etc/systemd/system/rpi-backup-pihole.service
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Install pihole backup timer unit
+  ansible.builtin.copy:
+    src: rpi-backup-pihole.timer
+    dest: /etc/systemd/system/rpi-backup-pihole.timer
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Enable nightly pihole backup timer
+  ansible.builtin.systemd:
+    name: rpi-backup-pihole.timer
+    enabled: true
+    state: started
+    daemon_reload: true

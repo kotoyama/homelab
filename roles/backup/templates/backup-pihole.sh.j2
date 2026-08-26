@@ -1,59 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
+umask 077
+
+source "{{ backup_script_dir }}/lib.sh"
 
 BACKUP_DIR="{{ backups_dir }}/pihole"
 KEEP_DAYS=7
-COOKIE="/tmp/pihole-backup-cookies.txt"
 CLI_PW_FILE="/etc/pihole/cli_pw"
 
-# SSD must be mounted
-if ! mountpoint -q {{ data_dir }}; then
-  echo "❌ ERROR: {{ data_dir }} not mounted, aborting"
-  exit 1
-fi
+require_mounted {{ data_dir }}
 
 if [ ! -r "$CLI_PW_FILE" ]; then
   echo "❌ ERROR: $CLI_PW_FILE not found (check cli_pw=true in pihole.toml)"
   exit 1
 fi
 
-mkdir -p "$BACKUP_DIR"
-STAMP="$(date +%Y%m%d_%H%M%S)"
-DEST="$BACKUP_DIR/pihole-teleporter-$STAMP.zip"
+echo "▶️ Starting pihole backup..."
+DEST="$(make_dest "$BACKUP_DIR" pihole-teleporter zip)"
 
-echo "▶️ Starting..."
-
-# auth: session with CLI password + CSRF token
+# auth: SID + CSRF token (docs.pi-hole.net/api/auth)
 PW="$(cat "$CLI_PW_FILE")"
-AUTH="$(curl -s -c "$COOKIE" -X POST http://localhost/api/auth \
+AUTH="$(printf '{"password":"%s"}' "$PW" | curl -s --max-time 30 -X POST http://localhost/api/auth \
   -H "Content-Type: application/json" \
-  -d "{\"password\":\"$PW\"}")" || {
+  -d @-)" || {
   echo "❌ ERROR: auth request failed"
   exit 1
 }
-CSRF="$(echo "$AUTH" | python3 -c 'import sys,json; print(json.load(sys.stdin)["session"]["csrf"])' 2>/dev/null)" || {
+mapfile -t SESSION < <(echo "$AUTH" | python3 -c '
+import sys, json
+s = json.load(sys.stdin)["session"]
+print(s["sid"])
+print(s["csrf"])
+' 2>/dev/null)
+
+if [ -z "${SESSION[1]:-}" ]; then
   echo "❌ ERROR: auth failed (cli_pw invalid?)"
-  rm -f "$COOKIE"
   exit 1
-}
+fi
+
+SID="${SESSION[0]}"
+CSRF="${SESSION[1]}"
 
 # download the export (zip)
-if ! curl -s -b "$COOKIE" -H "X-CSRF-TOKEN: $CSRF" http://localhost/api/teleporter -o "$DEST"; then
+if ! curl -s --max-time 120 -H "X-FTL-SID: $SID" -H "X-FTL-CSRF: $CSRF" http://localhost/api/teleporter -o "$DEST"; then
   echo "❌ ERROR: teleporter download failed"
-  rm -f "$COOKIE"
-  exit 1
-fi
-rm -f "$COOKIE"
-
-# verify archive integrity
-if ! unzip -tq "$DEST" >/dev/null 2>&1; then
-  echo "❌ ERROR: archive integrity check failed, removing $DEST"
-  rm -f "$DEST"
   exit 1
 fi
 
-# rotation: delete backups older than KEEP_DAYS days
-find "$BACKUP_DIR" -name 'pihole-teleporter-*.zip' -mtime +"$KEEP_DAYS" -delete
-
-COUNT="$(find "$BACKUP_DIR" -name 'pihole-teleporter-*.zip' | wc -l)"
-echo "✅ OK: $DEST ($(du -h "$DEST" | cut -f1)), kept $COUNT"
+verify_archive "$DEST" unzip -tq
+finish_backup "$BACKUP_DIR" 'pihole-teleporter-*.zip' "$KEEP_DAYS" "$DEST"

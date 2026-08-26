@@ -1,4 +1,2 @@
 ---
-mealie_dir: "{{ apps_dir }}/mealie"
 mealie_image: ghcr.io/mealie-recipes/mealie:v3.24.0
-mealie_port: "9925"
