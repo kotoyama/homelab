@@ -1,0 +1,5 @@
+---
+- name: Deploy forgejo
+  community.docker.docker_compose_v2:
+    project_src: "{{ forgejo_dir }}"
+    state: present

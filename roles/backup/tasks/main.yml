@@ -49,8 +49,8 @@
 - name: Set up pihole backup
   ansible.builtin.import_tasks: pihole.yml
 
-- name: Set up mealie backup
-  ansible.builtin.import_tasks: mealie.yml
+- name: Set up compose service backups
+  ansible.builtin.include_tasks: compose-backup.yml
 
 - name: Set up cloud backup sync
   ansible.builtin.import_tasks: cloud-sync.yml

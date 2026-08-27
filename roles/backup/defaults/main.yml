@@ -1,2 +1,15 @@
 ---
 backup_script_dir: /usr/local/lib/rpi-backup
+backup_keep_days: 7
+
+backup_compose_services:
+  - name: mealie
+    dir: "{{ mealie_dir }}"
+    port: "{{ mealie_port }}"
+    container: mealie
+    calendar: "*-*-* 03:30:00"
+  - name: forgejo
+    dir: "{{ forgejo_dir }}"
+    port: "{{ forgejo_port }}"
+    container: forgejo
+    calendar: "*-*-* 04:00:00"

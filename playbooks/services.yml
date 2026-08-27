@@ -8,3 +8,4 @@
     - { role: pihole, tags: pihole }
     - { role: mealie, tags: mealie }
     - { role: easyoffer, tags: easyoffer }
+    - { role: forgejo, tags: forgejo }

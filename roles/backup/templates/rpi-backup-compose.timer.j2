@@ -1,0 +1,9 @@
+[Unit]
+Description={{ item.name | capitalize }} data backup
+
+[Timer]
+OnCalendar={{ item.calendar }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

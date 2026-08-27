@@ -23,24 +23,26 @@ SSD mounted at `/mnt/data`:
 ├── docker/          # docker root
 ├── apps/            # docker compose services
 └── backups/
-    ├── pihole/      # teleporter exports
-    └── mealie/      # full data snapshots
+    ├── pihole/
+    ├── mealie/
+    └── forgejo/
 ```
 
 ### Services
 
 LAN-only: nothing is exposed to the internet.
 
-| Service   | Ports  | Purpose                        |
-| --------- | ------ | ------------------------------ |
-| Pi-hole   | 53, 80 | network-wide DNS ad blocking   |
-| Mealie    | 9925   | recipe manager                 |
-| easyoffer | 8080   | static site pulled from GitHub |
+| Service   | Ports      | Purpose                        |
+| --------- | ---------- | ------------------------------ |
+| Pi-hole   | 53, 80     | network-wide DNS ad blocking   |
+| Forgejo   | 3000, 222  | git hosting                    |
+| Mealie    | 9925       | recipe manager                 |
+| easyoffer | 8080       | static site pulled from GitHub |
 
 **Scheduled jobs**:
 
 - **hourly** — easyoffer site refresh
-- **daily** — backups: Pi-hole Teleporter, Mealie data snapshot (7-day retention), encrypted sync to Google Drive
+- **daily** — backups: Pi-hole Teleporter, Mealie and Forgejo data snapshots (7-day retention), encrypted sync to Google Drive
 - **weekly** — Docker image prune
 
 ## Fresh start

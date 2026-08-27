@@ -1,0 +1,35 @@
+---
+- name: Install compose backup scripts
+  ansible.builtin.template:
+    src: backup-compose.sh.j2
+    dest: "{{ backup_script_dir }}/backup-{{ item.name }}.sh"
+    mode: "0755"
+    owner: root
+    group: root
+  loop: "{{ backup_compose_services }}"
+
+- name: Install compose backup service units
+  ansible.builtin.template:
+    src: rpi-backup-compose.service.j2
+    dest: /etc/systemd/system/rpi-backup-{{ item.name }}.service
+    mode: "0644"
+    owner: root
+    group: root
+  loop: "{{ backup_compose_services }}"
+
+- name: Install compose backup timer units
+  ansible.builtin.template:
+    src: rpi-backup-compose.timer.j2
+    dest: /etc/systemd/system/rpi-backup-{{ item.name }}.timer
+    mode: "0644"
+    owner: root
+    group: root
+  loop: "{{ backup_compose_services }}"
+
+- name: Enable nightly compose backup timers
+  ansible.builtin.systemd:
+    name: rpi-backup-{{ item.name }}.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+  loop: "{{ backup_compose_services }}"

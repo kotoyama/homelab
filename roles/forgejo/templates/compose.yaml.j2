@@ -1,0 +1,23 @@
+services:
+  forgejo:
+    image: {{ forgejo_image }}
+    container_name: forgejo
+    ports:
+      - "{{ forgejo_port }}:3000"
+      - "222:22"
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    environment:
+      - TZ={{ timezone }}
+      - USER_UID=1000
+      - USER_GID=1000
+      - FORGEJO__server__DOMAIN=rpi4.local
+      - FORGEJO__server__ROOT_URL=http://rpi4.local:3000/
+      - FORGEJO__server__SSH_PORT=222
+      - FORGEJO__service__DISABLE_REGISTRATION=true
+    volumes:
+      - ./data:/data
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped

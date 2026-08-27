@@ -8,6 +8,9 @@ backups_dir: "{{ data_dir }}/backups"
 mealie_dir: "{{ apps_dir }}/mealie"
 mealie_port: "9925"
 
+forgejo_dir: "{{ apps_dir }}/forgejo"
+forgejo_port: "3000"
+
 ansible_become: true
 ansible_become_method: sudo
 ansible_become_pass: "{{ vault_become_password }}"
