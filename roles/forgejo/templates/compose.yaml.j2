@@ -4,7 +4,7 @@ services:
     container_name: forgejo
     ports:
       - "{{ forgejo_port }}:3000"
-      - "222:22"
+      - "{{ forgejo_ssh_port }}:22"
     deploy:
       resources:
         limits:
@@ -13,9 +13,9 @@ services:
       - TZ={{ timezone }}
       - USER_UID=1000
       - USER_GID=1000
-      - FORGEJO__server__DOMAIN=rpi4.local
-      - FORGEJO__server__ROOT_URL=http://rpi4.local:3000/
-      - FORGEJO__server__SSH_PORT=222
+      - FORGEJO__server__DOMAIN={{ server_hostname }}
+      - FORGEJO__server__ROOT_URL=http://{{ server_hostname }}:{{ forgejo_port }}/
+      - FORGEJO__server__SSH_PORT={{ forgejo_ssh_port }}
       - FORGEJO__service__DISABLE_REGISTRATION=true
     volumes:
       - ./data:/data

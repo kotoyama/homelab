@@ -5,7 +5,7 @@ map $uri $error_page_path {
 
 server {
     listen 80;
-    server_name rpi4.local;
+    server_name {{ server_hostname }};
 
     # use relative redirects
     absolute_redirect off;

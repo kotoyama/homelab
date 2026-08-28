@@ -6,13 +6,17 @@
     mode: "0755"
 
 - name: Deploy nginx config
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "{{ easyoffer_dir }}/{{ item }}"
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ easyoffer_dir }}/nginx.conf"
     mode: "0644"
-  loop:
-    - nginx.conf
-    - security-headers.conf
+  notify: Deploy easyoffer
+
+- name: Deploy security headers
+  ansible.builtin.copy:
+    src: security-headers.conf
+    dest: "{{ easyoffer_dir }}/security-headers.conf"
+    mode: "0644"
   notify: Deploy easyoffer
 
 - name: Deploy site update script

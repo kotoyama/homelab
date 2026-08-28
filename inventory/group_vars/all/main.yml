@@ -1,5 +1,6 @@
 ---
 timezone: Europe/Sofia
+server_hostname: rpi4.local
 
 data_dir: /mnt/data
 apps_dir: "{{ data_dir }}/apps"
