@@ -1,0 +1,7 @@
+[Unit]
+Description=Seed Forgejo pull mirrors from GitHub repositories
+
+[Service]
+Type=oneshot
+EnvironmentFile={{ forgejo_dir }}/mirror.env
+ExecStart={{ forgejo_script_dir }}/rpi-forgejo-mirror.sh

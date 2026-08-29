@@ -1,3 +1,4 @@
 ---
 forgejo_image: codeberg.org/forgejo/forgejo:16
 forgejo_ssh_port: "222"
+forgejo_script_dir: /usr/local/lib/rpi-forgejo-mirror

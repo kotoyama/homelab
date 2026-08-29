@@ -17,6 +17,7 @@ services:
       - FORGEJO__server__ROOT_URL=http://{{ server_hostname }}:{{ forgejo_port }}/
       - FORGEJO__server__SSH_PORT={{ forgejo_ssh_port }}
       - FORGEJO__service__DISABLE_REGISTRATION=true
+      - FORGEJO__mirror__DEFAULT_INTERVAL=24h
     volumes:
       - ./data:/data
       - /etc/localtime:/etc/localtime:ro
