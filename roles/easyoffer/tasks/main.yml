@@ -66,6 +66,7 @@
     enabled: true
     state: started
     daemon_reload: true
+  when: not ansible_check_mode
 
 - name: Apply easyoffer deployment now (if changed)
   ansible.builtin.meta: flush_handlers

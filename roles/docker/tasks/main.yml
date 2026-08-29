@@ -50,6 +50,7 @@
     name: docker
     enabled: true
     state: started
+  when: not ansible_check_mode
 
 - name: Install docker prune service unit
   ansible.builtin.template:
@@ -69,3 +70,4 @@
     enabled: true
     state: started
     daemon_reload: true
+  when: not ansible_check_mode

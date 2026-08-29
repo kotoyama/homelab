@@ -33,3 +33,4 @@
     state: started
     daemon_reload: true
   loop: "{{ backup_compose_services }}"
+  when: not ansible_check_mode
