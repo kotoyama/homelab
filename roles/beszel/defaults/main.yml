@@ -1,0 +1,7 @@
+---
+beszel_image: henrygd/beszel:0.18.8
+beszel_agent_image: henrygd/beszel-agent:0.18.8-alpine
+beszel_dir: "{{ apps_dir }}/beszel"
+beszel_port: "8090"
+beszel_agent_port: "45876"
+beszel_agent_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGLeHlf+Z7hgNJCBeD4NPezaQGWtGJB+xGjSjTw+a/lz"

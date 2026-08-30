@@ -1,0 +1,28 @@
+services:
+  beszel:
+    image: {{ beszel_image }}
+    container_name: beszel
+    ports:
+      - "{{ beszel_port }}:8090"
+    environment:
+      - APP_URL=http://{{ server_hostname }}:{{ beszel_port }}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./beszel_data:/beszel_data
+    restart: unless-stopped
+{% if beszel_agent_key %}
+  beszel-agent:
+    image: {{ beszel_agent_image }}
+    container_name: beszel-agent
+    network_mode: host
+    volumes:
+      - ./beszel_agent_data:/var/lib/beszel-agent
+      - {{ data_dir }}/apps:/extra-filesystems/data:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/log:/extra-filesystems/sdcard:ro
+    environment:
+      - LISTEN={{ beszel_agent_port }}
+      - KEY={{ beszel_agent_key }}
+    restart: unless-stopped
+{% endif %}

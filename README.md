@@ -20,12 +20,9 @@ SSD mounted at `/mnt/data`:
 
 ```
 /mnt/data/
-├── docker/          # docker root
-├── apps/            # docker compose services
-└── backups/
-    ├── pihole/
-    ├── mealie/
-    └── forgejo/
+├── docker/     # docker root
+├── apps/       # docker compose services
+└── backups/    # snapshots → Google Drive
 ```
 
 ### Services
@@ -38,11 +35,12 @@ LAN-only: nothing is exposed to the internet.
 | Forgejo   | 3000, 222 | git hosting + GitHub mirrors   |
 | Mealie    | 9925      | recipe manager                 |
 | easyoffer | 8080      | static site pulled from GitHub |
+| Beszel    | 8090      | monitoring dashboard           |
 
 **Scheduled jobs**:
 
 - **hourly**: easyoffer site refresh
-- **daily**: Pi-hole Teleporter backup, Mealie and Forgejo data snapshots (7-day retention), encrypted sync to Google Drive
+- **daily**: backups (7-day retention), encrypted sync to Google Drive
 - **weekly**: Docker image prune, Forgejo mirror seeding
 
 ## Fresh start

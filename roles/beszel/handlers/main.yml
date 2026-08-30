@@ -1,0 +1,6 @@
+---
+- name: Deploy beszel
+  community.docker.docker_compose_v2:
+    project_src: "{{ beszel_dir }}"
+    state: present
+  when: not ansible_check_mode

@@ -9,3 +9,4 @@
     - { role: mealie, tags: mealie }
     - { role: easyoffer, tags: easyoffer }
     - { role: forgejo, tags: forgejo }
+    - { role: beszel, tags: beszel }
