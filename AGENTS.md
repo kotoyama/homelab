@@ -22,5 +22,6 @@ To operate on a single service, append `--tags <role>` to any playbook invocatio
 - **Pinned images**: exact versions unless an upstream stable tag exists.
 - **Secrets**: live in vault only. No secrets in code, logs, or chat history. When quoting output that contains one, mask the value with asterisks (e.g. `vault_become_password: ****`).
 - **Healthcheck**: every role deploying a compose service ends with a healthcheck task.
+- **Variable placement**: service-scoped variables live in `roles/<service>/defaults/main.yml`; `inventory/group_vars/all/main.yml` holds only host-wide values or variables reused across roles.
 - **No default values**: before writing any config, consult version-matched upstream docs (installed package docs on the Pi, e.g. `zcat /usr/share/doc/unattended-upgrades/README.md.gz`, man pages, image docs) and commit only overrides or required values — never copies of default/sample files. Verify effective state after deploy where possible (e.g. `apt-config dump`).
 - **No dead code**: after deleting anything, grep the whole repo (no extension filters) for leftovers.
