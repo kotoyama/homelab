@@ -28,19 +28,10 @@
     owner: root
     group: root
 
-- name: Deploy rclone config
+- name: Deploy rclone env file
   ansible.builtin.template:
-    src: rclone.conf.j2
-    dest: /root/.config/rclone/rclone.conf
-    mode: "0600"
-    owner: root
-    group: root
-  no_log: true
-
-- name: Deploy gdrive token env file
-  ansible.builtin.template:
-    src: gdrive.env.j2
-    dest: /root/.config/rclone/gdrive.env
+    src: rclone.env.j2
+    dest: /root/.config/rclone/rclone.env
     mode: "0600"
     owner: root
     group: root

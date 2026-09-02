@@ -4,5 +4,5 @@ RequiresMountsFor={{ data_dir }}
 
 [Service]
 Type=oneshot
-EnvironmentFile=/root/.config/rclone/gdrive.env
+EnvironmentFile=/root/.config/rclone/rclone.env
 ExecStart={{ backup_script_dir }}/sync-backups.sh
