@@ -17,6 +17,7 @@ To operate on a single service, append `--tags <role>` to any playbook invocatio
 
 - **Single source of truth**: any configuration change goes through roles and a playbook deploy. Never edit configs directly on the Pi (exception: a live hotfix to state the next run wouldn't touch anyway).
 - **Simplicity first**: a variable earns its place only if overridden elsewhere or used in 2+ places; otherwise inline the value. No speculative abstractions.
+- **Claim labeling**: every factual statement is `verified` / `assumption` / `unverified`. Never present assumptions or doc examples as facts. Verify via the cheapest authoritative source first (version-matched official docs, man pages, etc.); escalate to source inspection only if docs are ambiguous, and stop after one dead end — report `unverified` and let the user decide instead of digging deeper.
 - **Consistency**: never invent new patterns — follow the conventions of existing roles.
 - **Idempotency**: describe state with modules, restart only through handlers on actual change; no `shell`/`command` tasks.
 - **Pinned images**: exact versions unless an upstream stable tag exists.
