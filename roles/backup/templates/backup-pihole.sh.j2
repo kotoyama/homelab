@@ -5,7 +5,7 @@ umask 077
 source "{{ backup_script_dir }}/lib.sh"
 
 BACKUP_DIR="{{ backups_dir }}/pihole"
-KEEP_DAYS=7
+KEEP_DAYS={{ backup_keep_days }}
 CLI_PW_FILE="/etc/pihole/cli_pw"
 
 require_mounted {{ data_dir }}
