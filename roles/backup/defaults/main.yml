@@ -1,5 +1,6 @@
 ---
 backup_script_dir: /usr/local/lib/rpi-backup
+backup_cloud_dir: rpi4-backups
 backup_keep_days: 7
 
 backup_compose_services:

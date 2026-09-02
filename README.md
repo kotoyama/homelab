@@ -22,7 +22,7 @@ SSD mounted at `/mnt/data`:
 /mnt/data/
 ├── docker/     # docker root
 ├── apps/       # docker compose services
-└── backups/    # snapshots → Google Drive
+└── backups/    # snapshots → Google Drive + Koofr
 ```
 
 ### Services
@@ -40,7 +40,7 @@ LAN-only: nothing is exposed to the internet.
 **Scheduled jobs**:
 
 - **hourly**: easyoffer site refresh
-- **daily**: backups (7-day retention), encrypted sync to Google Drive
+- **daily**: backups (7-day retention), encrypted sync to Google Drive and Koofr
 - **weekly**: Docker image prune, Forgejo mirror seeding
 
 ## Fresh start

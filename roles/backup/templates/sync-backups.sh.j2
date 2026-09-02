@@ -7,9 +7,18 @@ source "{{ backup_script_dir }}/lib.sh"
 require_mounted {{ data_dir }}
 
 echo "▶️ Starting cloud backup sync..."
-if ! rclone sync /mnt/data/backups gcrypt:rpi4-backups; then
+
+failed=0
+for remote in gcrypt kcrypt; do
+  if ! rclone sync {{ backups_dir }} "$remote:"; then
+    echo "❌ ERROR: sync to $remote failed"
+    failed=1
+  fi
+done
+
+if [ "$failed" -ne 0 ]; then
   echo "❌ ERROR: cloud sync failed"
   exit 1
 fi
 
-echo "✅ OK: backups synced to Google Drive"
+echo "✅ OK: backups synced to Google Drive and Koofr"
