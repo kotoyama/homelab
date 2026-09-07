@@ -16,6 +16,11 @@ services:
     image: {{ beszel_agent_image }}
     container_name: beszel-agent
     network_mode: host
+    devices:
+      - /dev/sda:/dev/sda
+    cap_add:
+      - SYS_RAWIO
+      - SYS_ADMIN
     volumes:
       - ./beszel_agent_data:/var/lib/beszel-agent
       - {{ data_dir }}/apps:/extra-filesystems/data:ro
