@@ -1,5 +1,7 @@
 [Unit]
 Description=Seed Forgejo pull mirrors from GitHub repositories
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Type=oneshot

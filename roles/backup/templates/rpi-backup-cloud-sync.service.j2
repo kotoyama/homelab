@@ -1,6 +1,8 @@
 [Unit]
 Description=Cloud backup sync to Google Drive and Koofr
 RequiresMountsFor={{ data_dir }}
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Type=oneshot
