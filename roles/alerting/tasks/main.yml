@@ -1,0 +1,35 @@
+---
+- name: Install telegram notifier env file
+  ansible.builtin.template:
+    src: notify-telegram.env.j2
+    dest: /etc/default/rpi-notify-telegram
+    mode: "0600"
+    owner: root
+    group: root
+  no_log: true
+
+- name: Install telegram notifier service unit
+  ansible.builtin.copy:
+    src: rpi-notify-telegram@.service
+    dest: /etc/systemd/system/rpi-notify-telegram@.service
+    mode: "0644"
+    owner: root
+    group: root
+  notify: Daemon reload
+
+- name: Create top-level service drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/service.d
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Attach OnFailure handler to all service units
+  ansible.builtin.copy:
+    src: on-failure.conf
+    dest: /etc/systemd/system/service.d/on-failure.conf
+    mode: "0644"
+    owner: root
+    group: root
+  notify: Daemon reload

@@ -1,0 +1,10 @@
+[Unit]
+Description=Telegram alert for %i
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+DynamicUser=true
+EnvironmentFile=/etc/default/rpi-notify-telegram
+ExecStart=-/usr/bin/curl -fsS --max-time 10 https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage -d chat_id=${TELEGRAM_CHAT_ID} -d "text=%i failed on %H"

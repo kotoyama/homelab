@@ -43,6 +43,8 @@ LAN-only: nothing is exposed to the internet.
 - **daily**: backups (7-day retention), encrypted sync to Google Drive and Koofr
 - **weekly**: Docker image prune, Forgejo mirror seeding
 
+**Alerts**: if any systemd service fails, a Telegram message is sent.
+
 ## Fresh start
 
 1. Flash an SD card with Raspberry Pi Imager. In OS customization: enable SSH, set user `kotoyama`, add your public key (`rpi4.pub`), set hostname `rpi4`.

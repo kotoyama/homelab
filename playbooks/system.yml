@@ -7,3 +7,4 @@
     - { role: common, tags: common }
     - { role: storage, tags: storage }
     - { role: docker, tags: docker }
+    - { role: alerting, tags: alerting }
