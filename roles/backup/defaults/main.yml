@@ -3,6 +3,8 @@ backup_script_dir: /usr/local/lib/rpi-backup
 backup_cloud_dir: rpi4-backups
 backup_keep_days: 7
 backup_rclone_version: "1.75.1"
+backup_rclone_version_sha256: "773f3a76615f91f7d4654183a537afddce3343c8d99ac1d74984f060f2ade2d9"
+backup_rclone_deb_path: /usr/local/src/rclone-v{{ backup_rclone_version }}-linux-arm64.deb
 
 backup_compose_services:
   - name: mealie

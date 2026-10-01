@@ -15,9 +15,18 @@
     owner: root
     group: root
 
+- name: Download rclone deb
+  ansible.builtin.get_url:
+    url: "https://downloads.rclone.org/v{{ backup_rclone_version }}/rclone-v{{ backup_rclone_version }}-linux-arm64.deb"
+    dest: "{{ backup_rclone_deb_path }}"
+    mode: "0644"
+    owner: root
+    group: root
+    checksum: "sha256:{{ backup_rclone_version_sha256 }}"
+
 - name: Install rclone
   ansible.builtin.apt:
-    deb: "https://downloads.rclone.org/v{{ backup_rclone_version }}/rclone-v{{ backup_rclone_version }}-linux-arm64.deb"
+    deb: "{{ backup_rclone_deb_path }}"
 
 - name: Create rclone config directory
   ansible.builtin.file:
@@ -35,6 +44,11 @@
     owner: root
     group: root
   no_log: true
+
+- name: Remove stray rclone config file
+  ansible.builtin.file:
+    path: /root/.config/rclone/rclone.conf
+    state: absent
 
 - name: Set up pihole backup
   ansible.builtin.import_tasks: pihole.yml
