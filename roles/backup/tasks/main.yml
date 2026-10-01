@@ -17,8 +17,7 @@
 
 - name: Install rclone
   ansible.builtin.apt:
-    name: rclone
-    state: present
+    deb: "https://downloads.rclone.org/v{{ backup_rclone_version }}/rclone-v{{ backup_rclone_version }}-linux-arm64.deb"
 
 - name: Create rclone config directory
   ansible.builtin.file:
