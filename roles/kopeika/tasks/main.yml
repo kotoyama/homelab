@@ -49,6 +49,55 @@
 - name: Apply kopeika deployment now (if changed)
   ansible.builtin.meta: flush_handlers
 
+- name: Deploy kopeika update script
+  ansible.builtin.template:
+    src: kopeika-update.sh.j2
+    dest: "{{ kopeika_dir }}/update.sh"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Create root ssh directory
+  ansible.builtin.file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Restore kopeika deploy private key
+  ansible.builtin.copy:
+    content: "{{ vault_kopeika_deploy_key_private }}"
+    dest: "{{ kopeika_deploy_key_path }}"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Install kopeika update service unit
+  ansible.builtin.template:
+    src: rpi-kopeika-update.service.j2
+    dest: /etc/systemd/system/rpi-kopeika-update.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Install kopeika update timer unit
+  ansible.builtin.copy:
+    src: rpi-kopeika-update.timer
+    dest: /etc/systemd/system/rpi-kopeika-update.timer
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable hourly kopeika update timer
+  ansible.builtin.systemd:
+    name: rpi-kopeika-update.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: not ansible_check_mode
+
 - name: Check kopeika server responds
   ansible.builtin.uri:
     url: "http://localhost:{{ kopeika_port }}/health"

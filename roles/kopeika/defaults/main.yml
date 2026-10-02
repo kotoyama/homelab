@@ -1,4 +1,10 @@
 ---
 kopeika_version: "322c0571cfeb9ea1670c44a4a6ed33b04ba21366"
-kopeika_image_server: "ghcr.io/kotoyama/kopeika-server:{{ kopeika_version }}"
-kopeika_image_bot: "ghcr.io/kotoyama/kopeika-bot:{{ kopeika_version }}"
+
+kopeika_server_image_repo: "ghcr.io/kotoyama/kopeika-server"
+kopeika_bot_image_repo: "ghcr.io/kotoyama/kopeika-bot"
+
+kopeika_image_server: "{{ kopeika_server_image_repo }}:{{ kopeika_version }}"
+kopeika_image_bot: "{{ kopeika_bot_image_repo }}:{{ kopeika_version }}"
+
+kopeika_deploy_key_path: /root/.ssh/kopeika_deploy
