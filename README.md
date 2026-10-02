@@ -40,7 +40,7 @@ LAN-only: nothing is exposed to the internet.
 
 **Scheduled jobs**:
 
-- **hourly**: easyoffer site refresh
+- **hourly**: easyoffer site refresh, kopeika auto-update
 - **daily**: backups (7-day retention), encrypted sync to Google Drive and Koofr
 - **weekly**: Docker image prune, Forgejo mirror seeding
 
