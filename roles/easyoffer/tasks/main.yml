@@ -25,6 +25,23 @@
     dest: "{{ easyoffer_dir }}/update.sh"
     mode: "0755"
 
+- name: Restore easyoffer deploy private key
+  ansible.builtin.copy:
+    content: "{{ vault_easyoffer_deploy_key_private }}"
+    dest: "{{ easyoffer_deploy_key_path }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0600"
+  no_log: true
+
+- name: Route github.com through deploy key
+  ansible.builtin.copy:
+    src: ssh-config
+    dest: "/home/{{ ansible_user }}/.ssh/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0644"
+
 - name: Check site checkout exists
   ansible.builtin.stat:
     path: "{{ easyoffer_site_dir }}/.git"
