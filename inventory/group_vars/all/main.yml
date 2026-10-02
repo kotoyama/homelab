@@ -12,6 +12,9 @@ mealie_port: "9925"
 forgejo_dir: "{{ apps_dir }}/forgejo"
 forgejo_port: "3000"
 
+kopeika_dir: "{{ apps_dir }}/kopeika"
+kopeika_port: "8091"
+
 ansible_become: true
 ansible_become_method: sudo
 ansible_become_pass: "{{ vault_become_password }}"

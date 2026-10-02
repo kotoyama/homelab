@@ -10,10 +10,18 @@ backup_compose_services:
   - name: mealie
     dir: "{{ mealie_dir }}"
     port: "{{ mealie_port }}"
-    container: mealie
+    containers: [mealie]
+    health_path: /
     calendar: "*-*-* 03:30:00"
   - name: forgejo
     dir: "{{ forgejo_dir }}"
     port: "{{ forgejo_port }}"
-    container: forgejo
+    containers: [forgejo]
+    health_path: /
     calendar: "*-*-* 04:00:00"
+  - name: kopeika
+    dir: "{{ kopeika_dir }}"
+    port: "{{ kopeika_port }}"
+    containers: [server, bot]
+    health_path: /health
+    calendar: "*-*-* 04:30:00"

@@ -1,0 +1,4 @@
+---
+kopeika_version: "322c0571cfeb9ea1670c44a4a6ed33b04ba21366"
+kopeika_image_server: "ghcr.io/kotoyama/kopeika-server:{{ kopeika_version }}"
+kopeika_image_bot: "ghcr.io/kotoyama/kopeika-bot:{{ kopeika_version }}"

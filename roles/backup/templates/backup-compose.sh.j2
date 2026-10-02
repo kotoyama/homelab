@@ -8,20 +8,18 @@ BACKUP_DIR="{{ backups_dir }}/{{ item.name }}"
 KEEP_DAYS={{ backup_keep_days }}
 COMPOSE_DIR="{{ item.dir }}"
 PORT="{{ item.port }}"
-CONTAINER="{{ item.container }}"
+HEALTH_PATH="{{ item.health_path }}"
+CONTAINERS=({% for container in item.containers %}{{ container }} {% endfor %})
 
 require_mounted {{ data_dir }}
 
 echo "▶️ Starting {{ item.name }} backup..."
 DEST="$(make_dest "$BACKUP_DIR" {{ item.name }}-data tar.gz)"
 
-# consistent snapshot of the data dir: stop -> tar -> start
-ensure_service_up() {
-  docker compose -f "$COMPOSE_DIR/compose.yaml" start "$CONTAINER" >/dev/null
-
-  # wait until the service answers again
+# wait until the service answers again
+wait_healthy() {
   for _ in {1..60}; do
-    curl -sf "http://localhost:$PORT/" >/dev/null && return 0
+    curl -sf "http://localhost:$PORT$HEALTH_PATH" >/dev/null && return 0
     sleep 1
   done
   echo "❌ ERROR: {{ item.name }} did not become healthy after restart"
@@ -29,9 +27,20 @@ ensure_service_up() {
 }
 
 # restore on any exit - never leave the service down
+ensure_service_up() {
+  local container
+  for container in "${CONTAINERS[@]}"; do
+    docker compose -f "$COMPOSE_DIR/compose.yaml" start "$container" >/dev/null
+    wait_healthy
+  done
+}
 trap ensure_service_up EXIT
 
-docker compose -f "$COMPOSE_DIR/compose.yaml" stop "$CONTAINER" >/dev/null
+# consistent snapshot of the data dir: stop -> tar -> start
+# stop in reverse dependency order (dependents first)
+{% for container in item.containers | reverse -%}
+  docker compose -f "$COMPOSE_DIR/compose.yaml" stop "{{ container }}" >/dev/null
+{% endfor -%}
 tar -czf "$DEST" -C "$COMPOSE_DIR" data
 
 verify_archive "$DEST" tar -tzf

@@ -35,6 +35,7 @@ LAN-only: nothing is exposed to the internet.
 | Forgejo   | 3000, 222 | git hosting + GitHub mirrors   |
 | Mealie    | 9925      | recipe manager                 |
 | easyoffer | 8080      | static site pulled from GitHub |
+| kopeika   | 8091      | personal finance Telegram bot  |
 | Beszel    | 8090      | monitoring dashboard           |
 
 **Scheduled jobs**:

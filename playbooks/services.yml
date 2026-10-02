@@ -9,4 +9,5 @@
     - { role: mealie, tags: mealie }
     - { role: easyoffer, tags: easyoffer }
     - { role: forgejo, tags: forgejo }
+    - { role: kopeika, tags: kopeika }
     - { role: beszel, tags: beszel }

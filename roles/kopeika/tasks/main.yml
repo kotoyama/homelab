@@ -1,0 +1,60 @@
+---
+- name: Create service directory
+  ansible.builtin.file:
+    path: "{{ kopeika_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create data directory
+  ansible.builtin.file:
+    path: "{{ kopeika_dir }}/data"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Create bot state directory
+  ansible.builtin.file:
+    path: "{{ kopeika_dir }}/data/bot"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Log in to ghcr.io
+  community.docker.docker_login:
+    registry_url: ghcr.io
+    username: kotoyama
+    password: "{{ vault_kopeika_ghcr_pat }}"
+    state: present
+  no_log: true
+
+- name: Deploy env file with secrets
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ kopeika_dir }}/env"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+  notify: Deploy kopeika
+
+- name: Deploy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ kopeika_dir }}/compose.yaml"
+    mode: "0644"
+  notify: Deploy kopeika
+
+- name: Apply kopeika deployment now (if changed)
+  ansible.builtin.meta: flush_handlers
+
+- name: Check kopeika server responds
+  ansible.builtin.uri:
+    url: "http://localhost:{{ kopeika_port }}/health"
+    status_code: 200
+  register: kopeika_health
+  retries: 12
+  delay: 10
+  until: kopeika_health.status == 200
+  when: not ansible_check_mode
