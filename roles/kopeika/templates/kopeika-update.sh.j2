@@ -2,55 +2,8 @@
 set -euo pipefail
 umask 077
 
-COMPOSE_DIR="{{ kopeika_dir }}"
-REPO_URL="git@github.com:kotoyama/kopeika.git"
-SERVER_IMAGE="{{ kopeika_server_image_repo }}"
-BOT_IMAGE="{{ kopeika_bot_image_repo }}"
-OVERRIDE_FILE="$COMPOSE_DIR/compose.override.yaml"
+cd "{{ kopeika_dir }}"
 
-export GIT_SSH_COMMAND="ssh -i {{ kopeika_deploy_key_path }} -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
-
-desired="$(git ls-remote "$REPO_URL" HEAD | cut -f1)" || {
-  echo "❌ kopeika-update: cannot read $REPO_URL, skipping"
-  exit 0
-}
-if ! [[ $desired =~ ^[0-9a-f]{40}$ ]]; then
-  echo "❌ kopeika-update: unparseable HEAD sha '$desired', skipping"
-  exit 0
-fi
-
-if [ -f "$OVERRIDE_FILE" ]; then
-  pin_file="$OVERRIDE_FILE"
-else
-  pin_file="$COMPOSE_DIR/compose.yaml"
-fi
-current="$(grep -m1 -oE '[0-9a-f]{40}' "$pin_file" || true)"
-
-if [ "$desired" = "$current" ]; then
-  echo "✅ kopeika-update: up to date ($desired)"
-  exit 0
-fi
-
-docker pull -q "$SERVER_IMAGE:$desired" || {
-  echo "ℹ️ kopeika-update: image $SERVER_IMAGE:$desired not ready, skipping"
-  exit 0
-}
-docker pull -q "$BOT_IMAGE:$desired" || {
-  echo "ℹ️ kopeika-update: image $BOT_IMAGE:$desired not ready, skipping"
-  exit 0
-}
-
-echo "▶️ kopeika-update: updating $current -> $desired"
-cat > "$OVERRIDE_FILE" <<EOF
-services:
-  db-setup:
-    image: $SERVER_IMAGE:$desired
-  server:
-    image: $SERVER_IMAGE:$desired
-  bot:
-    image: $BOT_IMAGE:$desired
-EOF
-chmod 0644 "$OVERRIDE_FILE"
-
-docker compose -f "$COMPOSE_DIR/compose.yaml" -f "$OVERRIDE_FILE" up -d
-echo "✅ kopeika-update: now running $desired"
+docker compose pull || { echo "ℹ️ kopeika-update: images not ready, skipping"; exit 0; }
+docker compose up -d
+echo "✅ kopeika-update: now running latest"
