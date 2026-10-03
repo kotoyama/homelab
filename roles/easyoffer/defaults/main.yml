@@ -7,4 +7,4 @@ easyoffer_site_dir: "{{ easyoffer_dir }}/_site"
 easyoffer_site_repo: git@github.com:kotoyama/easyoffer.git
 easyoffer_site_branch: site-dist
 
-easyoffer_deploy_key_path: "/home/{{ ansible_user }}/.ssh/easyoffer_deploy"
+easyoffer_deploy_key_path: "{{ user_home_dir }}/.ssh/easyoffer_deploy"

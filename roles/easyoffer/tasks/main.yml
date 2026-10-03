@@ -37,7 +37,7 @@
 - name: Route github.com through deploy key
   ansible.builtin.copy:
     src: ssh-config
-    dest: "/home/{{ ansible_user }}/.ssh/config"
+    dest: "{{ user_home_dir }}/.ssh/config"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "0644"

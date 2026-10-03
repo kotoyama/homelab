@@ -5,6 +5,7 @@ server_hostname: rpi4.local
 data_dir: /mnt/data
 apps_dir: "{{ data_dir }}/apps"
 backups_dir: "{{ data_dir }}/backups"
+user_home_dir: "/home/{{ ansible_user }}"
 
 mealie_dir: "{{ apps_dir }}/mealie"
 mealie_port: "9925"
