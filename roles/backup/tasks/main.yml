@@ -7,6 +7,23 @@
     owner: root
     group: root
 
+- name: Create pihole backup directory
+  ansible.builtin.file:
+    path: "{{ backups_dir }}/pihole"
+    state: directory
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Create compose backup directories
+  ansible.builtin.file:
+    path: "{{ backups_dir }}/{{ item.name }}"
+    state: directory
+    mode: "0700"
+    owner: root
+    group: root
+  loop: "{{ backup_compose_services }}"
+
 - name: Install shared backup library
   ansible.builtin.copy:
     src: lib.sh

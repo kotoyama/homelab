@@ -25,9 +25,3 @@
     path: "{{ apps_dir }}"
     state: directory
     mode: "0755"
-
-- name: Create pihole backups directory
-  ansible.builtin.file:
-    path: "{{ backups_dir }}/pihole"
-    state: directory
-    mode: "0755"
