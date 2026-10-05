@@ -13,9 +13,10 @@ services:
       - FTLCONF_dns_listeningMode=all
       - FTLCONF_dns_dnssec=true
       - FTLCONF_dns_upstreams=unbound#{{ pihole_unbound_port }}
+      - FTLCONF_database_maxDBdays=30
       - FTLCONF_webserver_api_password=${FTLCONF_webserver_api_password}
     volumes:
-      - /etc/pihole:/etc/pihole
+      - {{ pihole_dir }}/etc:/etc/pihole
     restart: unless-stopped
 
   unbound:
