@@ -5,6 +5,12 @@
     state: directory
     mode: "0755"
 
+- name: Create unbound config directory
+  ansible.builtin.file:
+    path: "{{ pihole_dir }}/unbound"
+    state: directory
+    mode: "0755"
+
 - name: Deploy .env with admin password
   ansible.builtin.template:
     src: env.j2
@@ -22,6 +28,13 @@
     mode: "0644"
   notify: Deploy pihole
 
+- name: Deploy unbound forwarder config
+  ansible.builtin.template:
+    src: forwarder.conf.j2
+    dest: "{{ pihole_dir }}/unbound/forwarder.conf"
+    mode: "0644"
+  notify: Deploy pihole
+
 - name: Apply pihole deployment now (if changed)
   ansible.builtin.meta: flush_handlers
 
@@ -33,4 +46,40 @@
   retries: 12
   delay: 10
   until: pihole_health.status in [200, 401]
+  when: not ansible_check_mode
+
+- name: Check DNSSEC resolution through unbound
+  community.docker.docker_container_exec:
+    container: pihole
+    argv:
+      - dig
+      - "@unbound"
+      - -p
+      - "{{ pihole_unbound_port }}"
+      - +dnssec
+      - +time=3
+      - +tries=1
+      - dnssec.works
+  register: pihole_unbound_dns
+  retries: 6
+  delay: 10
+  until: "'status: NOERROR' in pihole_unbound_dns.stdout and ' ad' in pihole_unbound_dns.stdout"
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Check DNSSEC resolution through Pi-hole
+  community.docker.docker_container_exec:
+    container: pihole
+    argv:
+      - dig
+      - "@127.0.0.1"
+      - +dnssec
+      - +time=3
+      - +tries=1
+      - example.com
+  register: pihole_dns
+  retries: 6
+  delay: 10
+  until: "'status: NOERROR' in pihole_dns.stdout and ' ad' in pihole_dns.stdout"
+  changed_when: false
   when: not ansible_check_mode

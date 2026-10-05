@@ -2,6 +2,8 @@ services:
   pihole:
     container_name: pihole
     image: {{ pihole_image }}
+    depends_on:
+      - unbound
     ports:
       - "{{ pihole_dns_port }}:53/tcp"
       - "{{ pihole_dns_port }}:53/udp"
@@ -9,7 +11,16 @@ services:
     environment:
       - TZ={{ timezone }}
       - FTLCONF_dns_listeningMode=all
+      - FTLCONF_dns_dnssec=true
+      - FTLCONF_dns_upstreams=unbound#{{ pihole_unbound_port }}
       - FTLCONF_webserver_api_password=${FTLCONF_webserver_api_password}
     volumes:
       - /etc/pihole:/etc/pihole
+    restart: unless-stopped
+
+  unbound:
+    container_name: unbound
+    image: {{ pihole_unbound_image }}
+    volumes:
+      - ./unbound:/etc/unbound/custom.conf.d:ro
     restart: unless-stopped

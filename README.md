@@ -32,7 +32,7 @@ Firewall: the LAN reaches no published service except Pi-hole DNS (port 53). Eve
 | Service   | Ports     | Visible to | Purpose                        |
 | --------- | --------- | ---------- | ------------------------------ |
 | SSH       | 22        | tailscale  | host shell                     |
-| Pi-hole   | 53        | LAN        | network-wide DNS ad blocking   |
+| Pi-hole   | 53        | LAN        | DNS ad blocking, DoT upstream  |
 | Pi-hole   | 80        | tailscale  | admin UI                       |
 | Forgejo   | 3000, 222 | tailscale  | git hosting + GitHub mirrors   |
 | easyoffer | 8080      | tailscale  | static site pulled from GitHub |
