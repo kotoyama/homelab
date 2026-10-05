@@ -1,0 +1,29 @@
+---
+- name: Install deb822 repository tooling
+  ansible.builtin.apt:
+    name: python3-debian
+    state: present
+
+- name: Add Tailscale apt repository (deb822)
+  ansible.builtin.deb822_repository:
+    name: tailscale
+    types: deb
+    uris: https://pkgs.tailscale.com/stable/raspbian
+    suites: "{{ ansible_facts.distribution_release }}"
+    components: main
+    signed_by: https://pkgs.tailscale.com/stable/raspbian/{{ ansible_facts.distribution_release }}.noarmor.gpg
+    state: present
+
+- name: Install Tailscale packages
+  ansible.builtin.apt:
+    name: tailscale
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Enable and start tailscaled
+  ansible.builtin.systemd:
+    name: tailscaled
+    enabled: true
+    state: started
+  when: not ansible_check_mode

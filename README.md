@@ -27,16 +27,18 @@ SSD mounted at `/mnt/data`:
 
 ### Services
 
-LAN-only: nothing is exposed to the internet.
+Firewall: the LAN reaches no published service except Pi-hole DNS (port 53). Everything else is Tailscale-only: `http://rpi4:<port>`.
 
-| Service   | Ports     | Purpose                        |
-| --------- | --------- | ------------------------------ |
-| Pi-hole   | 53, 80    | network-wide DNS ad blocking   |
-| Forgejo   | 3000, 222 | git hosting + GitHub mirrors   |
-| Mealie    | 9925      | recipe manager                 |
-| easyoffer | 8080      | static site pulled from GitHub |
-| kopeika   | 8091      | personal finance Telegram bot  |
-| Beszel    | 8090      | monitoring dashboard           |
+| Service   | Ports     | Visible to | Purpose                        |
+| --------- | --------- | ---------- | ------------------------------ |
+| SSH       | 22        | tailscale  | host shell                     |
+| Pi-hole   | 53        | LAN        | network-wide DNS ad blocking   |
+| Pi-hole   | 80        | tailscale  | admin UI                       |
+| Forgejo   | 3000, 222 | tailscale  | git hosting + GitHub mirrors   |
+| easyoffer | 8080      | tailscale  | static site pulled from GitHub |
+| Beszel    | 8090      | tailscale  | monitoring dashboard           |
+| Mealie    | 9925      | tailscale  | recipe manager                 |
+| kopeika   | loopback  | bot only   | personal finance Telegram bot  |
 
 **Scheduled jobs**:
 
@@ -48,8 +50,8 @@ LAN-only: nothing is exposed to the internet.
 
 ## Fresh start
 
-1. Flash an SD card with Raspberry Pi Imager. In OS customization: enable SSH, set user `kotoyama`, add your public key (`rpi4.pub`), set hostname `rpi4`.
-2. On your router, bind a fixed IP to the Pi's `eth0` MAC address via DHCP.
+1. Flash an SD card with Raspberry Pi Imager. In OS customization: enable SSH, set user `kotoyama`, add your public key (`rpi4.pub`), set hostname `rpi4`, configure Wi-Fi.
+2. On your router, bind a fixed IP to the Pi's `wlan0` MAC address via DHCP.
 3. Make sure your host has vault password (`~/.config/rpi/vault-password`) and the SSH private key (`rpi4`).
 4. On your Pi, attach the SSD and format it:
 
@@ -67,9 +69,11 @@ LAN-only: nothing is exposed to the internet.
    sudo mkfs.ext4 -L data /dev/sda1
    ```
 
-5. On the host: `brew install ansible ansible-lint && ansible-galaxy collection install -r requirements.yml`
-6. Fill in secrets: `EDITOR=nano ansible-vault edit inventory/group_vars/all/vault.yml`
-7. Deploy: `ansible-playbook playbooks/site.yml`
+5. On the host: `brew install ansible ansible-lint && ansible-galaxy collection install -r requirements.yml`.
+6. Fill in secrets: `EDITOR=nano ansible-vault edit inventory/group_vars/all/vault.yml`.
+7. Deploy over the LAN: `ansible-playbook playbooks/site.yml -e ansible_host=rpi4.local -e ansible_ssh_private_key_file=~/.ssh/rpi4` (a wiped SD does not resolve `rpi4` yet).
+8. Log the Pi into Tailscale: `sudo tailscale up`, then disable key expiry for it in the admin console.
+9. Deploy over the tailnet: `ansible-playbook playbooks/site.yml`.
 
 ## Example commands
 

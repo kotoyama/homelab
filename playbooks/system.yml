@@ -8,3 +8,4 @@
     - { role: storage, tags: storage }
     - { role: docker, tags: docker }
     - { role: alerting, tags: alerting }
+    - { role: tailscale, tags: tailscale }

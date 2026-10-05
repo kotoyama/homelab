@@ -8,3 +8,9 @@
   ansible.builtin.systemd:
     name: ssh
     state: reloaded
+
+- name: Restart rpi-firewall
+  ansible.builtin.systemd:
+    name: rpi-firewall
+    state: restarted
+  when: not ansible_check_mode

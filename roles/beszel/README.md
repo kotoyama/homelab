@@ -3,7 +3,7 @@
 After first deploy, complete setup in the hub UI:
 
 1. Create the admin account.
-2. **Add System**: name `rpi4`, host `host.docker.internal`, port `45876`. Copy the shown `KEY=ssh-ed25519 ...` into `beszel_agent_key` and redeploy.
+2. **Add System**: name `rpi4`, host `/beszel_socket/beszel.sock`. Copy the shown `KEY=ssh-ed25519 ...` into `beszel_agent_key` and redeploy.
 3. Telegram notifications: send `/start` to your bot, then in the hub go to **Settings → Notifications** and add:
 
    ```sh

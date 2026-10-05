@@ -18,8 +18,34 @@
     dest: /etc/apt/apt.conf.d/20auto-upgrades
     mode: "0644"
 
-- name: Restrict unattended-upgrades to security origin
+- name: Install unattended-upgrades origins config
   ansible.builtin.copy:
     src: apt-50unattended-upgrades
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     mode: "0644"
+
+- name: Install LAN firewall script
+  ansible.builtin.copy:
+    src: firewall-rpi.sh
+    dest: /usr/local/sbin/firewall-rpi.sh
+    mode: "0755"
+    owner: root
+    group: root
+  notify: Restart rpi-firewall
+
+- name: Install LAN firewall service unit
+  ansible.builtin.copy:
+    src: rpi-firewall.service
+    dest: /etc/systemd/system/rpi-firewall.service
+    mode: "0644"
+    owner: root
+    group: root
+  notify: Restart rpi-firewall
+
+- name: Enable LAN firewall at boot
+  ansible.builtin.systemd:
+    name: rpi-firewall.service
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: not ansible_check_mode
