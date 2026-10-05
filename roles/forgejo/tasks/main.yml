@@ -3,12 +3,16 @@
   ansible.builtin.file:
     path: "{{ forgejo_dir }}"
     state: directory
+    owner: root
+    group: root
     mode: "0755"
 
 - name: Deploy compose file
   ansible.builtin.template:
     src: compose.yaml.j2
     dest: "{{ forgejo_dir }}/compose.yaml"
+    owner: root
+    group: root
     mode: "0644"
   notify: Deploy forgejo
 

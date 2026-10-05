@@ -3,12 +3,16 @@
   ansible.builtin.file:
     path: "{{ easyoffer_dir }}"
     state: directory
+    owner: root
+    group: root
     mode: "0755"
 
 - name: Deploy nginx config
   ansible.builtin.template:
     src: nginx.conf.j2
     dest: "{{ easyoffer_dir }}/nginx.conf"
+    owner: root
+    group: root
     mode: "0644"
   notify: Deploy easyoffer
 
@@ -16,6 +20,8 @@
   ansible.builtin.copy:
     src: security-headers.conf
     dest: "{{ easyoffer_dir }}/security-headers.conf"
+    owner: root
+    group: root
     mode: "0644"
   notify: Deploy easyoffer
 
@@ -23,6 +29,8 @@
   ansible.builtin.template:
     src: update.sh.j2
     dest: "{{ easyoffer_dir }}/update.sh"
+    owner: root
+    group: root
     mode: "0755"
 
 - name: Restore easyoffer deploy private key
@@ -62,6 +70,8 @@
   ansible.builtin.template:
     src: compose.yaml.j2
     dest: "{{ easyoffer_dir }}/compose.yaml"
+    owner: root
+    group: root
     mode: "0644"
   notify: Deploy easyoffer
 

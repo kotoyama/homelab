@@ -3,6 +3,8 @@
   ansible.builtin.file:
     path: "{{ kopeika_dir }}"
     state: directory
+    owner: root
+    group: root
     mode: "0755"
 
 - name: Create data directory
@@ -43,6 +45,8 @@
   ansible.builtin.template:
     src: compose.yaml.j2
     dest: "{{ kopeika_dir }}/compose.yaml"
+    owner: root
+    group: root
     mode: "0644"
   notify: Deploy kopeika
 
