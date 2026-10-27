@@ -15,6 +15,7 @@ services:
       - FTLCONF_dns_upstreams=unbound#{{ pihole_unbound_port }}
       - FTLCONF_database_maxDBdays=30
       - FTLCONF_webserver_api_password=${FTLCONF_webserver_api_password}
+      - FTLCONF_webserver_session_timeout=2592000
     volumes:
       - {{ pihole_dir }}/etc:/etc/pihole
     restart: unless-stopped

@@ -12,6 +12,7 @@ services:
       - ./data:/app/data/
     environment:
       - ALLOW_SIGNUP=false
+      - TOKEN_TIME=720
       - PUID=1000
       - PGID=1000
       - TZ={{ timezone }}
