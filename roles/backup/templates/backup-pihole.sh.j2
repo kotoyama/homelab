@@ -29,6 +29,8 @@ AUTH="$(printf '{"password":"%s"}' "$PW" | curl -s --max-time 30 -X POST http://
 mapfile -t SESSION < <(echo "$AUTH" | python3 -c '
 import sys, json
 s = json.load(sys.stdin)["session"]
+if not s["valid"]:
+  sys.exit(1)
 print(s["sid"])
 print(s["csrf"])
 ' 2>/dev/null)
@@ -41,11 +43,20 @@ fi
 SID="${SESSION[0]}"
 CSRF="${SESSION[1]}"
 
+# seats are capped by webserver.api.max_sessions=16, so logout right after use
+release_session() {
+  curl -s --max-time 30 -X DELETE http://localhost/api/auth \
+    -H "X-FTL-SID: $SID" -H "X-FTL-CSRF: $CSRF" >/dev/null || true
+}
+
 # download the export (zip)
-if ! curl -s --max-time 120 -H "X-FTL-SID: $SID" -H "X-FTL-CSRF: $CSRF" http://localhost/api/teleporter -o "$DEST"; then
+if ! curl -sf --max-time 120 -H "X-FTL-SID: $SID" -H "X-FTL-CSRF: $CSRF" http://localhost/api/teleporter -o "$DEST"; then
+  rm -f -- "$DEST"
+  release_session
   echo "❌ ERROR: teleporter download failed"
   exit 1
 fi
+release_session
 
 verify_archive "$DEST" unzip -tq
 finish_backup "$BACKUP_DIR" 'pihole-teleporter-*.zip' "$KEEP_DAYS" "$DEST"
