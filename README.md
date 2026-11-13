@@ -39,6 +39,7 @@ Firewall: the LAN reaches no published service except Pi-hole DNS (port 53). Eve
 | Beszel    | 8090      | tailscale  | monitoring dashboard           |
 | Mealie    | 9925      | tailscale  | recipe manager                 |
 | Navidrome | 4533      | tailscale  | music streaming                |
+| beets     | none      | internal   | music auto-import → Navidrome  |
 | kopeika   | loopback  | bot only   | personal finance Telegram bot  |
 
 **Scheduled jobs**:
@@ -46,6 +47,10 @@ Firewall: the LAN reaches no published service except Pi-hole DNS (port 53). Eve
 - **hourly**: easyoffer site refresh, kopeika auto-update
 - **daily**: backups (7-day retention), encrypted sync to Google Drive and Koofr
 - **weekly**: Docker image prune, Forgejo mirror seeding
+
+**Event-driven jobs**:
+
+- beets inbox auto-import (systemd path watcher) → Navidrome auto-scan
 
 **Alerts**: if any systemd service fails, a Telegram message is sent.
 

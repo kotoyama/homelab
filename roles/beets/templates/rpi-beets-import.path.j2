@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch beets inbox for new music
+RequiresMountsFor={{ data_dir }}
+
+[Path]
+PathModified={{ beets_dir }}/inbox
+
+[Install]
+WantedBy=multi-user.target

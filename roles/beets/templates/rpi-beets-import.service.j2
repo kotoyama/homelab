@@ -1,0 +1,9 @@
+[Unit]
+Description=Import new music from beets inbox
+RequiresMountsFor={{ data_dir }}
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart={{ beets_dir }}/import.sh

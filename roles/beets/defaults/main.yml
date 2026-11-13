@@ -1,0 +1,3 @@
+---
+beets_image: lscr.io/linuxserver/beets:2.14.1
+beets_dir: "{{ apps_dir }}/beets"

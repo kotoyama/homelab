@@ -1,0 +1,8 @@
+---
+- name: Deploy beets
+  community.docker.docker_compose_v2:
+    project_src: "{{ beets_dir }}"
+    state: present
+    remove_orphans: true
+    recreate: always
+  when: not ansible_check_mode

@@ -11,4 +11,5 @@
     - { role: forgejo, tags: forgejo }
     - { role: kopeika, tags: kopeika }
     - { role: navidrome, tags: navidrome }
+    - { role: beets, tags: beets }
     - { role: beszel, tags: beszel }

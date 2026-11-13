@@ -1,0 +1,17 @@
+services:
+  beets:
+    image: {{ beets_image }}
+    container_name: beets
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone }}
+    volumes:
+      - ./config:/config
+      - {{ apps_dir }}/navidrome/music:/music
+      - ./inbox:/downloads
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    restart: unless-stopped

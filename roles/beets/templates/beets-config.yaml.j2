@@ -1,0 +1,18 @@
+directory: /music
+library: /config/musiclibrary.blb
+import:
+  copy: no
+  move: yes
+  quiet: yes
+  quiet_fallback: asis
+  incremental: yes
+  duplicate_action: skip
+  resume: no
+plugins: fetchart embedart lyrics web
+paths:
+  default: $albumartist/$album/$track - $title
+fetchart:
+  fetch_for_asis: yes
+  maxwidth: 1000
+lyrics:
+  synced: yes

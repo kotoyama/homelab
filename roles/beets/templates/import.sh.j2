@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+INBOX="{{ beets_dir }}/inbox"
+while [ -n "$(find "$INBOX" -newermt '-60 seconds' -print -quit)" ]; do sleep 30; done
+docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets beet import -q /downloads
+find "$INBOX" -type f \( -name '.DS_Store' -o -name '._*' -o -iname 'Thumbs.db' -o -iname 'desktop.ini' \) -delete
+find "$INBOX" -mindepth 1 -type d -empty -delete
