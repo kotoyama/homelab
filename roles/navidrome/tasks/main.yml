@@ -1,0 +1,46 @@
+---
+- name: Create service directory
+  ansible.builtin.file:
+    path: "{{ navidrome_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Create data directory
+  ansible.builtin.file:
+    path: "{{ navidrome_dir }}/data"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Create music directory
+  ansible.builtin.file:
+    path: "{{ navidrome_dir }}/music"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Deploy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ navidrome_dir }}/compose.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Deploy navidrome
+
+- name: Apply navidrome deployment now (if changed)
+  ansible.builtin.meta: flush_handlers
+
+- name: Check Navidrome responds
+  ansible.builtin.uri:
+    url: "http://localhost:{{ navidrome_port }}/ping"
+    status_code: 200
+  register: navidrome_health
+  retries: 12
+  delay: 10
+  until: navidrome_health.status == 200
+  when: not ansible_check_mode

@@ -10,4 +10,5 @@
     - { role: easyoffer, tags: easyoffer }
     - { role: forgejo, tags: forgejo }
     - { role: kopeika, tags: kopeika }
+    - { role: navidrome, tags: navidrome }
     - { role: beszel, tags: beszel }

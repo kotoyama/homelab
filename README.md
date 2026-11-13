@@ -38,6 +38,7 @@ Firewall: the LAN reaches no published service except Pi-hole DNS (port 53). Eve
 | easyoffer | 8080      | tailscale  | static site pulled from GitHub |
 | Beszel    | 8090      | tailscale  | monitoring dashboard           |
 | Mealie    | 9925      | tailscale  | recipe manager                 |
+| Navidrome | 4533      | tailscale  | music streaming                |
 | kopeika   | loopback  | bot only   | personal finance Telegram bot  |
 
 **Scheduled jobs**:

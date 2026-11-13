@@ -1,0 +1,19 @@
+services:
+  navidrome:
+    image: {{ navidrome_image }}
+    container_name: navidrome
+    user: "1000:1000"
+    ports:
+      - "{{ navidrome_port }}:4533"
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    volumes:
+      - ./data:/data
+      - ./music:/music:ro
+    environment:
+      - TZ={{ timezone }}
+      - ND_ENABLEINSIGHTSCOLLECTOR=false
+      - ND_SCANNER_SCHEDULE=1h
+    restart: unless-stopped

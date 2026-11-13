@@ -16,6 +16,9 @@ forgejo_port: "3000"
 kopeika_dir: "{{ apps_dir }}/kopeika"
 kopeika_port: "8091"
 
+navidrome_dir: "{{ apps_dir }}/navidrome"
+navidrome_port: "4533"
+
 pihole_dir: "{{ apps_dir }}/pihole"
 
 ansible_become: true

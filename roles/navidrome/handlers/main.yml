@@ -1,0 +1,7 @@
+---
+- name: Deploy navidrome
+  community.docker.docker_compose_v2:
+    project_src: "{{ navidrome_dir }}"
+    state: present
+    remove_orphans: true
+  when: not ansible_check_mode

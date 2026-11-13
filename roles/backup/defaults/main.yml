@@ -25,3 +25,9 @@ backup_compose_services:
     containers: [server, bot]
     health_path: /health
     calendar: "*-*-* 04:30:00"
+  - name: navidrome
+    dir: "{{ navidrome_dir }}"
+    port: "{{ navidrome_port }}"
+    containers: [navidrome]
+    health_path: /ping
+    calendar: "*-*-* 04:45:00"
