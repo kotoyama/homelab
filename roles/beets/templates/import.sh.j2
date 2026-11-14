@@ -1,7 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 INBOX="{{ beets_dir }}/inbox"
-while [ -n "$(find "$INBOX" -newermt '-60 seconds' -print -quit)" ]; do sleep 30; done
+TRASH="{{ beets_dir }}/trash"
+mkdir -p "$TRASH"
+
+# wait until the inbox goes quiet
+wait_quiet() {
+  while [ -n "$(find "$INBOX" -newermt '-60 seconds' -print -quit)" ]; do sleep 30; done
+}
+
+wait_quiet
 docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets beet import -q /downloads
+
+# let transfers started during the import settle
+wait_quiet
+
+# strip known mac/windows junk
 find "$INBOX" -type f \( -name '.DS_Store' -o -name '._*' -o -iname 'Thumbs.db' -o -iname 'desktop.ini' \) -delete
 find "$INBOX" -mindepth 1 -type d -empty -delete
+
+# non-audio residue → trash (30-day grace)
+shopt -s nullglob
+for p in "$INBOX"/*; do
+  if [ -z "$(find "$p" -regextype posix-extended -iregex '.*\.(m4a|mp3|flac|ogg|oga|opus|wav|aiff|aif|aac|wma|ape|wv|mpc)' -type f -print -quit)" ]; then
+    t="$TRASH/$(date +%Y%m%d-%H%M%S)_${p##*/}"
+    mv "$p" "$t"
+    touch "$t"
+  fi
+done
+# prune trash older than 30 days
+find "$TRASH" -mindepth 1 -maxdepth 1 -mtime +30 -exec rm -rf {} +
