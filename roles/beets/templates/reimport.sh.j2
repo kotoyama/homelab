@@ -2,7 +2,22 @@
 set -euo pipefail
 [ $# -eq 2 ] || { echo "usage: reimport-beets <artist> <album>"; exit 1; }
 
+INBOX="{{ beets_dir }}/inbox"
+[ -n "$(find "$INBOX" -mindepth 1 -print -quit)" ] || {
+  echo "inbox is empty — nothing to reimport; not touching the library" >&2
+  exit 1
+}
+
+# 1. delete the album's old files from /music (paths from beets' own DB — injection-safe)
+docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets \
+  beet ls -f '$path' "artist:$1" "album:$2" | while IFS= read -r p; do
+    docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets rm -f -- "$p"
+  done
+
+# 2. remove the catalog entries
 docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets \
   beet remove -f "artist:$1" "album:$2"
+
+# 3. reimport the inbox without incremental memos
 docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets \
   beet import -q -I /downloads
