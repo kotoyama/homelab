@@ -16,10 +16,15 @@
     group: "{{ ansible_user }}"
     mode: "0700"
 
-- name: Install authorized_keys
-  ansible.builtin.copy:
-    src: authorized_keys
-    dest: "{{ user_home_dir }}/.ssh/authorized_keys"
+- name: Ensure authorized_keys contains the deploy key
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ lookup('file', 'authorized_keys') }}"
+
+- name: Ensure authorized_keys permissions
+  ansible.builtin.file:
+    path: "{{ user_home_dir }}/.ssh/authorized_keys"
+    state: file
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "0600"
