@@ -48,6 +48,24 @@
     group: root
     mode: "0755"
 
+- name: Deploy reimport script
+  ansible.builtin.template:
+    src: reimport.sh.j2
+    dest: "{{ beets_dir }}/reimport.sh"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Symlink reimport into PATH
+  ansible.builtin.file:
+    src: "{{ beets_dir }}/reimport.sh"
+    dest: /usr/local/bin/reimport-beets
+    owner: root
+    group: root
+    mode: "0755"
+    state: link
+    force: true
+
 - name: Deploy compose file
   ansible.builtin.template:
     src: compose.yaml.j2

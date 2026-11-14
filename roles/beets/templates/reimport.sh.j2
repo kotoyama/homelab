@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[ $# -eq 2 ] || { echo "usage: reimport-beets <artist> <album>"; exit 1; }
+
+docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets \
+  beet remove -f "artist:$1" "album:$2"
+docker compose -f "{{ beets_dir }}/compose.yaml" exec --user abc -T beets \
+  beet import -q -I /downloads
