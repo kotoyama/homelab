@@ -7,11 +7,13 @@
 
 ## Adding music
 
-Drop the music into the inbox:
+**On macOS**: drop the music into the inbox:
 
 ```sh
 rsync -av <music folder>/ rpi4:/mnt/data/apps/beets/inbox/
 ```
+
+**On Windows**: connect with WinSCP over SFTP (host `rpi4`, port `22`, user `kotoyama`, key under **Advanced → SSH → Authentication → Private key file**) and copy music into `/mnt/data/apps/beets/inbox/`.
 
 Adding tracks to an album that's already imported? Also run this (beets skips re-dropped folders, so the catalog entry must be cleared):
 
