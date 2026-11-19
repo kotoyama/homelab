@@ -5,5 +5,24 @@ umask 077
 cd "{{ kopeika_dir }}"
 
 docker compose pull || { echo "ℹ️ kopeika-update: images not ready, skipping"; exit 0; }
-docker compose up -d
+
+prev_server="$(docker compose images -q server || true)"
+prev_bot="$(docker compose images -q bot || true)"
+
+if ! docker compose up -d --wait --wait-timeout 180; then
+  echo "⚠️ kopeika-update: new images failed to become healthy"
+  if [[ -n "$prev_server" && -n "$prev_bot" ]]; then
+    docker tag "$prev_server" "{{ kopeika_server_image }}"
+    docker tag "$prev_bot" "{{ kopeika_bot_image }}"
+    if docker compose up -d --pull never --force-recreate --wait --wait-timeout 180; then
+      echo "↩️ kopeika-update: rolled back to previous build"
+    else
+      echo "⚠️ kopeika-update: rollback failed"
+    fi
+  else
+    echo "⚠️ kopeika-update: no previous images to roll back to"
+  fi
+  exit 1
+fi
+
 echo "✅ kopeika-update: now running latest"
